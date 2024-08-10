@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from datetime import datetime
-from pymongo import MongoClient
+from pymongo import MongoClient,DESCENDING
 from dotenv import load_dotenv
 import os
 import pytz
@@ -96,8 +96,8 @@ def signin():
 @app.route('/Club_users', methods=['GET'])
 def get_users():
     try:
-        # Fetch all records from the collection
-        users = users_collection.find({}, {'_id': 0})  # Exclude the _id field
+        # Fetch all records from the collection, sorted by last_signin in descending order
+        users = users_collection.find({}, {'_id': 0}).sort('last_signin',DESCENDING)  # Exclude the _id field
         # Convert MongoDB documents to a list of dictionaries
         users_list = list(users)
         return jsonify(users_list)
