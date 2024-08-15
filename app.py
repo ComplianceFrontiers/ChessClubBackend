@@ -26,6 +26,7 @@ def home():
 
 def time_now():
     return datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
 @app.route('/signup', methods=['POST'])
 def signup():
     user_data = request.get_json()
@@ -41,6 +42,11 @@ def signup():
             user_data.get('schoolName2'),
             user_data.get('schoolName3')
         ]
+        gradenames = [
+            user_data.get('schoolgrade1'),
+            user_data.get('schoolgrade2'),
+            user_data.get('schoolgrade3')
+        ]
         email = user_data.get('email')
         phone = user_data.get('phone')
         
@@ -48,15 +54,24 @@ def signup():
         existing_user = users_collection.find_one({'email': email})
         if existing_user:
             return jsonify({'error': 'User already exists. Please login.'}), 400
-
+        
+        # Handle kid1 specific checks
+        if not kidnames[0]:  # kidName1
+            kidnames[0] = "not a kid"
+        if not schoolnames[0]:  # schoolName1
+            schoolnames[0] = "not a kid"
+        if not gradenames[0]:  # schoolgrade1
+            gradenames[0] = "not a kid"
+        
         # Insert a record for each kid
         inserted_ids = []
-        for kidname, schoolname in zip(kidnames, schoolnames):
+        for kidname, schoolname, gradename in zip(kidnames, schoolnames, gradenames):
             if kidname and schoolname:
                 new_user = {
                     'parentName': parent_name,
                     'kidName': kidname,
                     'schoolName': schoolname,
+                    'gradename': gradename,
                     'email': email,
                     'phone': phone,
                 }
