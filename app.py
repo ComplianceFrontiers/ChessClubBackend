@@ -22,7 +22,7 @@ users_collection = db.users
 
 @app.route('/')
 def home():
-    return "Hello, Flask on Vercel!"
+    return "Hello, Flask on Vercel! "
 
 def time_now():
     return datetime.now().strftime('%Y-%m-%d %H:%M:%S')
